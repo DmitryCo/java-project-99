@@ -7,6 +7,7 @@ import jakarta.persistence.Table;
 import jakarta.persistence.Column;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -44,6 +45,7 @@ public class User {
     private String email;
 
     @NotBlank
+    @Size(min = 3)
     private String passwordDigest;
 
     @CreatedDate

@@ -1,2 +1,4 @@
-package hexlet.code.model;public interface BaseEntity {
+package hexlet.code.model;
+
+public interface BaseEntity {
 }
