@@ -6,31 +6,21 @@ import hexlet.code.dto.user.UserUpdateDTO;
 import hexlet.code.exception.ResourceNotFoundException;
 import hexlet.code.mapper.UserMapper;
 import hexlet.code.repository.UserRepository;
-import hexlet.code.service.CustomUserDetailsService;
-import hexlet.code.service.UserService;
 
 import jakarta.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/users")
+@RequestMapping("/api")
 public class UsersController {
-
-    private static final String ONLY_OWNER_OR_ADMIN = """
+    private static final String ONLY_OWNER_BY_ID_OR_ADMIN = """
                 @userRepository.findById(#id).get().getEmail() == authentication.getName()
                  || authentication.getName() == 'hexlet@example.com'
             """;
@@ -41,13 +31,7 @@ public class UsersController {
     @Autowired
     private UserMapper userMapper;
 
-    @Autowired
-    private CustomUserDetailsService userDetailsService;
-
-    @Autowired
-    private UserService userService;
-
-    @GetMapping("")
+    @GetMapping("/users")
     public ResponseEntity<List<UserDTO>> index() {
         var users = userRepository.findAll();
         var result = users.stream()
@@ -58,15 +42,17 @@ public class UsersController {
                 .body(result);
     }
 
-    @PostMapping("")
+    @PostMapping("/users")
     @ResponseStatus(HttpStatus.CREATED)
     public UserDTO create(@Valid @RequestBody UserCreateDTO userData) {
-        return create(userData);
+        var user = userMapper.map(userData);
+        userRepository.save(user);
+        return userMapper.map(user);
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/users/{id}")
     @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize(ONLY_OWNER_OR_ADMIN)
+    @PreAuthorize(ONLY_OWNER_BY_ID_OR_ADMIN)
     public UserDTO update(@RequestBody UserUpdateDTO userData, @PathVariable Long id) {
         var user = userRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Not Found"));
@@ -76,7 +62,7 @@ public class UsersController {
         return userDTO;
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/users/{id}")
     @ResponseStatus(HttpStatus.OK)
     public UserDTO show(@PathVariable Long id) {
         var user = userRepository.findById(id)
@@ -84,10 +70,10 @@ public class UsersController {
         return userMapper.map(user);
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/users/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    @PreAuthorize(ONLY_OWNER_OR_ADMIN)
-    public void delete(@PathVariable Long id) {
+    @PreAuthorize(ONLY_OWNER_BY_ID_OR_ADMIN)
+    public void delete(@PathVariable long id) {
         var user = userRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Not Found"));
         userRepository.delete(user);
