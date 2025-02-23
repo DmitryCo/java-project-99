@@ -12,10 +12,9 @@ import org.mapstruct.MappingTarget;
 import org.mapstruct.MappingConstants;
 import org.mapstruct.NullValuePropertyMappingStrategy;
 import org.mapstruct.ReportingPolicy;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-
-import java.util.List;
 
 @Mapper(
         uses = {JsonNullableMapper.class, ReferenceMapper.class},
@@ -28,23 +27,24 @@ public abstract class UserMapper {
     @Autowired
     private BCryptPasswordEncoder encoder;
 
-    public abstract List<UserDTO> map(List<User> users);
-
-    @Mapping(target = "passwordDigest", source = "password")
-    public abstract User map(UserCreateDTO model);
-
-    public abstract User map(UserUpdateDTO model);
-
-    @Mapping(target = "password", ignore = true)
-    public abstract UserDTO map(User model);
-
-    public abstract User map(UserDTO model);
-
-    public abstract void update(UserUpdateDTO update, @MappingTarget User destination);
-
     @BeforeMapping
     public void encryptPassword(UserCreateDTO data) {
         var password = data.getPassword();
         data.setPassword(encoder.encode(password));
     }
+
+    @BeforeMapping
+    public void encryptPasswordUpdate(UserUpdateDTO userUpdateDTO, @MappingTarget User user) {
+        var password = userUpdateDTO.getPassword();
+        if (password != null && password.isPresent()) {
+            user.setPasswordDigest(encoder.encode(password.get()));
+        }
+    }
+    @Mapping(target = "passwordDigest", source = "password")
+    public abstract User map(UserCreateDTO model);
+
+    public abstract UserDTO map(User model);
+
+    @Mapping(source = "password", target = "passwordDigest")
+    public abstract void update(UserUpdateDTO userUpdateDTO, @MappingTarget User user);
 }
