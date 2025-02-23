@@ -1,24 +1,20 @@
 package hexlet.code.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EntityListeners;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
 
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 import static jakarta.persistence.GenerationType.IDENTITY;
 
@@ -34,10 +30,11 @@ import lombok.ToString;
 @ToString(includeFieldNames = true, onlyExplicitlyIncluded = true)
 @EqualsAndHashCode(of = "email")
 @Table(name = "users")
-public class User implements UserDetails {
+public class User implements UserDetails, BaseEntity {
+
     @Id
     @GeneratedValue(strategy = IDENTITY)
-    private Long id;
+    private long id;
 
     @ToString.Include
     @NotBlank
@@ -54,7 +51,6 @@ public class User implements UserDetails {
     private String email;
 
     @NotBlank
-    @Size(min = 3)
     private String passwordDigest;
 
     @CreatedDate
@@ -62,6 +58,9 @@ public class User implements UserDetails {
 
     @LastModifiedDate
     private LocalDate updatedAt;
+
+    @OneToMany(mappedBy = "assignee", cascade = CascadeType.MERGE)
+    private Set<Task> tasks = new HashSet<>();
 
     @Override
     public String getPassword() {
@@ -93,5 +92,4 @@ public class User implements UserDetails {
     public boolean isCredentialsNonExpired() {
         return true;
     }
-
 }
