@@ -24,12 +24,15 @@ import lombok.AllArgsConstructor;
 @Configuration
 @AllArgsConstructor
 public class EncodersConfig {
+
     @Autowired
     private RsaKeyProperties rsaKeys;
+
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
+
     @Bean
     JwtEncoder jwtEncoder() {
         JWK jwk = new RSAKey.Builder(rsaKeys.getPublicKey()).privateKey(rsaKeys.getPrivateKey()).build();
