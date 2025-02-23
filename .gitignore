@@ -6,6 +6,7 @@ build/
 !**/src/test/**/build/
 .gitattributes
 node_modules
+data/
 
 ### STS ###
 .apt_generated
