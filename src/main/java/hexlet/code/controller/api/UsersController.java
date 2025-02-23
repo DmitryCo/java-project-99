@@ -7,6 +7,7 @@ import hexlet.code.exception.ResourceNotFoundException;
 import hexlet.code.mapper.UserMapper;
 import hexlet.code.repository.UserRepository;
 
+import hexlet.code.service.UserService;
 import jakarta.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +29,9 @@ public class UsersController {
     @Autowired
     private UserRepository userRepository;
 
+   @Autowired
+   private UserService userService;
+
     @Autowired
     private UserMapper userMapper;
 
@@ -45,9 +49,7 @@ public class UsersController {
     @PostMapping("/users")
     @ResponseStatus(HttpStatus.CREATED)
     public UserDTO create(@Valid @RequestBody UserCreateDTO userData) {
-        var user = userMapper.map(userData);
-        userRepository.save(user);
-        return userMapper.map(user);
+        return userService.create(userData);
     }
 
     @PutMapping("/users/{id}")
