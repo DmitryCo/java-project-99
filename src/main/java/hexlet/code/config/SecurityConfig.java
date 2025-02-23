@@ -2,7 +2,6 @@ package hexlet.code.config;
 
 import hexlet.code.service.CustomUserDetailsService;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -31,13 +30,8 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class SecurityConfig {
 
-    @Autowired
     private final JwtDecoder jwtDecoder;
-
-    @Autowired
     private final PasswordEncoder passwordEncoder;
-
-    @Autowired
     private final CustomUserDetailsService userDetailsService;
 
     public static final RequestMatcher PUBLIC_URLS = new OrRequestMatcher(
