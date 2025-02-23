@@ -1,4 +1,4 @@
-/*package hexlet.code.controller;
+package hexlet.code.controller;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +21,4 @@ public class WelcomeControllerTest {
         mockMvc.perform(get("/welcome"))
                 .andExpect(status().isOk());
     }
-
 }
-*/
