@@ -64,7 +64,7 @@ tasks.jacocoTestReport {
 sentry {
 	includeSourceContext = true
 
-	org = "myorg"
+	org = "dmitry-konstantinov"
 	projectName = "java"
 	authToken = System.getenv("SENTRY_AUTH_TOKEN")
 }

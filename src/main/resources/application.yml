@@ -32,3 +32,7 @@ springdoc:
 rsa:
   private-key: classpath:certs/private.pem
   public-key: classpath:certs/public.pem
+
+  sentry:
+    dsn: https://a5562a3c55a44b411e67ea58de06da4a@o4508875835834368.ingest.de.sentry.io/4508875843567696
+    traces-sample-rate: 1.0
