@@ -55,7 +55,7 @@ public class DataInitializer implements ApplicationRunner {
 
 
         List<LabelCreateDTO> labels = List.of(
-                new LabelCreateDTO("future"),
+                new LabelCreateDTO("feature"),
                 new LabelCreateDTO("bug")
         );
         labels.forEach(labelController::create);
