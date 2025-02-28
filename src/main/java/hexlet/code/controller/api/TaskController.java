@@ -42,7 +42,6 @@ public class TaskController {
                 .ok()
                 .header("X-Total-Count", String.valueOf(tasks.size()))
                 .body(tasks);
-
     }
 
     @PostMapping("/tasks")
